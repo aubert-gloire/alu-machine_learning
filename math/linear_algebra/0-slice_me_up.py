@@ -4,5 +4,5 @@ arr1 = arr[0:2]
 arr2 = arr[-4:]   
 arr3 = arr[1:4]   
 print("The first two numbers of the array are: {}".format(arr1))
-print("The last three numbers of the array are: {}".format(arr2))
-print("The 2nd through 4th numbers of the array are: {}".format(arr3))
+print("The last five numbers of the array are: {}".format(arr2))
+print("The 2nd through 6th numbers of the array are: {}".format(arr3))
