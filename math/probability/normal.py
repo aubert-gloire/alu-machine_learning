@@ -73,4 +73,3 @@ class Normal():
                                              (xa ** 9) / 216))
         cdf = (1 + errof) / 2
         return cdf
-    
