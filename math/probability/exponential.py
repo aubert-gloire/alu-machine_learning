@@ -1,85 +1,49 @@
 #!/usr/bin/env python3
-""" defines Exponential class that represents exponential distribution """
+"""
+Script to calculate a Exponential distribution
+"""
 
 
-class Exponential:
+class Exponential():
     """
-    class that represents exponential distribution
-
-    class constructor:
-        def __init__(self, data=None, lambtha=1.)
-
-    instance attributes:
-        lambtha [float]: the expected number of occurances in a given time
-
-    instance methods:
-        def pdf(self, x): calculates PDF for given time period
-        def cdf(self, x): calculates CDF for given time period
+    Tye class to call methods of Exponential distribution
+    CDF and PDF
     """
+
+    e = 2.7182818285
 
     def __init__(self, data=None, lambtha=1.):
-        """
-        class constructor
-
-        parameters:
-            data [list]: data to be used to estimate the distibution
-            lambtha [float]: the expected number of occurances on a given time
-
-        Sets the instance attribute lambtha as a float
-        If data is not given:
-            Use the given lambtha or
-            raise ValueError if lambtha is not positive value
-        If data is given:
-            Calculate the lambtha of data
-            Raise TypeError if data is not a list
-            Raise ValueError if data does not contain at least two data points
-        """
+        """ init """
         if data is None:
-            if lambtha < 1:
+            if lambtha <= 0:
                 raise ValueError("lambtha must be a positive value")
-            else:
-                self.lambtha = float(lambtha)
+            self.lambtha = float(lambtha)
         else:
             if type(data) is not list:
                 raise TypeError("data must be a list")
             elif len(data) < 2:
                 raise ValueError("data must contain multiple values")
             else:
-                lambtha = float(len(data) / sum(data))
-                self.lambtha = lambtha
+                self.lambtha = (1 / (sum(data) / len(data)))
 
     def pdf(self, x):
         """
-        calculates the value of the PDF for a given time period
-
-        parameters:
-            x [int]: time period
-                If x is out of range, return 0
-
-        return:
-            the PDF value for x
+        Method Probability Density function
+        k: integer value of the data
+        return: PDF
         """
         if x < 0:
             return 0
-        e = 2.7182818285
-        lambtha = self.lambtha
-        pdf = lambtha * (e ** (-lambtha * x))
-        return pdf
+        else:
+            pdf = self.lambtha * (Exponential.e**((-self.lambtha) * x))
+            return pdf
 
     def cdf(self, x):
         """
-        calculates the value of the CDF for a given time period
-
-        parameters:
-            x [int]: time period
-                If x is out of range, return 0
-
-        return:
-            the CDF value for x
+        Method Cumulative distribution function
+        k: integer value of the data
+        return: CDF
         """
         if x < 0:
             return 0
-        e = 2.7182818285
-        lambtha = self.lambtha
-        cdf = 1 - (e ** (-lambtha * x))
-        return cdf
+        return 1 - (Exponential.e**((-self.lambtha) * x))

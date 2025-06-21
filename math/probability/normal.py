@@ -1,128 +1,75 @@
 #!/usr/bin/env python3
-""" defines Normal class that represents normal distribution """
+"""
+Script to calculate a Normal distribution
+of continous variables and discretes
+"""
 
 
-class Normal:
+class Normal():
     """
-    class that represents normal distribution
-
-    class constructor:
-        def __init__(self, data=None, mean=0., stddev=1.)
-
-    instance attributes:
-        mean [float]: the mean of the distribution
-        stddev [float]: the standard deviation of the distribution
-
-    instance methods:
-        def z_score(self, x): calculates the z-score of a given x-value
-        def x_value(self, z): calculates the x-value of a given z-score
-        def pdf(self, x): calculates PDF for given x-value
-        def cdf(self, x): calculates CDF for given x-value
+    Type class normal distribution
     """
+
+    pi = 3.1415926536
+    e = 2.7182818285
 
     def __init__(self, data=None, mean=0., stddev=1.):
         """
-        class constructor
-
-        parameters:
-            data [list]: data to be used to estimate the distibution
-            mean [float]: the mean of the distribution
-            stddev [float]: the standard deviation of the distribution
-
-        Sets the instance attributes mean and stddev as floats
-        If data is not given:
-            Use the given mean and stddev
-            raise ValueError if stddev is not positive value
-        If data is given:
-            Calculate the mean and stddev of data
-            Raise TypeError if data is not a list
-            Raise ValueError if data does not contain at least two data points
+        data: list of data given
+        mean: self attribute of the mean of the data
+        stddev: standard error of the data
         """
+
         if data is None:
-            if stddev < 1:
+            if stddev <= 0:
                 raise ValueError("stddev must be a positive value")
-            else:
-                self.stddev = float(stddev)
-                self.mean = float(mean)
+            self.mean = float(mean)
+            self.stddev = float(stddev)
         else:
             if type(data) is not list:
                 raise TypeError("data must be a list")
             elif len(data) < 2:
                 raise ValueError("data must contain multiple values")
-            else:
-                mean = float(sum(data) / len(data))
-                self.mean = mean
-                summation = 0
-                for x in data:
-                    summation += ((x - mean) ** 2)
-                stddev = (summation / len(data)) ** (1 / 2)
-                self.stddev = stddev
+            self.mean = sum(data) / len(data)
+            sigma = 0
+            for i in range(0, len(data)):
+                x = (data[i] - self.mean) ** 2
+                sigma += x
+            self.stddev = (sigma / len(data)) ** (1 / 2)
 
     def z_score(self, x):
         """
-        calculates the z-score of a given x-value
-
-        parameters:
-            x: x-value
-
-        return:
-            z-score of x
+        x: x_value of the function
+        return: the z_score
         """
-        mean = self.mean
-        stddev = self.stddev
-        z = (x - mean) / stddev
-        return z
+
+        return (x - self.mean) / self.stddev
 
     def x_value(self, z):
         """
-        calculates the x-value of a given z-score
-
-        parameters:
-            z: z-score
-
-        return:
-            x-value of z
+        z: z value of the x value replica
+        return: x_value
         """
-        mean = self.mean
-        stddev = self.stddev
-        x = (z * stddev) + mean
-        return x
+        return self.stddev * z + self.mean
 
     def pdf(self, x):
         """
-        calculates the value of the PDF for a given x-value
-
-        parameters:
-            x: x-value
-
-        return:
-            the PDF value for x
+        x: the x parameter of the function
+        return: Probability Density Function
         """
-        mean = self.mean
-        stddev = self.stddev
-        e = 2.7182818285
-        pi = 3.1415926536
-        power = -0.5 * (self.z_score(x) ** 2)
-        coefficient = 1 / (stddev * ((2 * pi) ** (1 / 2)))
-        pdf = coefficient * (e ** power)
-        return pdf
+
+        p1 = 1 / (self.stddev * ((2 * Normal.pi) ** 0.5))
+        p2 = ((x - self.mean) ** 2) / (2 * (self.stddev ** 2))
+        return p1 * Normal.e ** (-p2)
 
     def cdf(self, x):
         """
-        calculates the value of the CDF for a given x-value
-
-        parameters:
-            x: x-value
-
-        return:
-            the CDF value for x
+        param x: x parameter of the function
+        return:  Cumulative distribution Function
         """
-        mean = self.mean
-        stddev = self.stddev
-        pi = 3.1415926536
-        value = (x - mean) / (stddev * (2 ** (1 / 2)))
-        erf = value - ((value ** 3) / 3) + ((value ** 5) / 10)
-        erf = erf - ((value ** 7) / 42) + ((value ** 9) / 216)
-        erf *= (2 / (pi ** (1 / 2)))
-        cdf = (1 / 2) * (1 + erf)
+        xa = (x - self.mean) / ((2 ** 0.5) * self.stddev)
+        errof = (((4 / Normal.pi) ** 0.5) * (xa - (xa ** 3) / 3 +
+                                             (xa ** 5) / 10 - (xa ** 7) / 42 +
+                                             (xa ** 9) / 216))
+        cdf = (1 + errof) / 2
         return cdf
